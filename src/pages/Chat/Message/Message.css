@@ -1,0 +1,34 @@
+.Message {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 16px;
+    border-radius: 16px;
+    width: max-content;
+}
+
+.Message_self {
+    align-self: end;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom-right-radius: unset;
+}
+
+.Message_other {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-bottom-left-radius: unset;
+}
+
+.Message__user {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.Message__text {
+    white-space: pre;
+}
+
+.Message__timestamp {
+    align-self: flex-end;
+    font-size: 12px;
+}
