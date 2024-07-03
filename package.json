@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "start:client": "vite build --watch",
     "start:server": "nodemon ./server/index.mjs -e html,js,css",
-    "start": "run-p start:server start:client"
+    "start:dev": "run-p start:client start:server",
+    "start": "npm run build && node ./server/index.mjs"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -8,7 +8,7 @@ type MessageProps = MessageType & {
     isSelf: boolean;
 };
 
-const dateTemplate = "dd.mm.yyyy hh:MM";
+const dateTemplate = "dd.mm.yyyy HH:MM";
 
 export const Message: FC<MessageProps> = ({
     user,
@@ -16,7 +16,6 @@ export const Message: FC<MessageProps> = ({
     timestamp,
     isSelf,
 }) => {
-    console.log(text);
     return (
         <article className={`Message Message_${isSelf ? "self" : "other"}`}>
             {!isSelf && <p className="Message__user">{user}</p>}

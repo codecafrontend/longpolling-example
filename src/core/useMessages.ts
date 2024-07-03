@@ -15,9 +15,7 @@ export const useMessages = () => {
 
     const longPoll = useCallback(async () => {
         try {
-            const response = await fetch(
-                `http://localhost:8001/poll?user=${user}`,
-            );
+            const response = await fetch(`/poll?user=${user}`);
             const newMessages = (await response.json()) as Message[];
 
             setMessages((list) => [...list, ...newMessages]);
@@ -40,7 +38,7 @@ export const useMessages = () => {
                 timestamp: new Date().toISOString(),
             };
 
-            void fetch("http://localhost:8001/send", {
+            void fetch("/send", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
