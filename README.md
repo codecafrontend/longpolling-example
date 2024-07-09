@@ -12,3 +12,5 @@ Local launch:
 npm ci
 npm run start:dev
 ```
+
+The application will be available at `localhost:8000`

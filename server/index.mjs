@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import reload from 'reload';
+import browserSync from 'browser-sync';
 
 import { createMessagesApi } from './api.mjs';
 
 export const app = express();
-const port = 8001;
+const port = 8000;
+const proxyPort = 8001;
 
 app.use(
     cors({
@@ -24,8 +25,12 @@ app.get('/', (_, res) => {
     res.sendFile(path.resolve('./dist/index.html'));
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+app.listen(proxyPort, () => {
+    console.log(`Server running on http://localhost:${proxyPort}`);
 });
 
-reload(app);
+browserSync({
+    port,
+    proxy: `localhost:${proxyPort}`,
+    files: ['dist/**/*']
+});

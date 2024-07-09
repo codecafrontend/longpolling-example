@@ -33,10 +33,16 @@ export const createMessagesApi = (app) => {
     app.get('/poll', (req, res) => {
         const { userId } = req.query;
 
+        if (!messagesQueue[userId]) {
+            messagesQueue[userId] = [];
+        }
+
         function checkForMessages() {
+            console.log('messages in queue', messagesQueue[userId]);
             if (messagesQueue[userId]?.length > 0) {
                 const messages = messagesQueue[userId];
                 messagesQueue[userId] = [];
+                console.log(messages)
                 res.json(messages);
             } else {
                 // Проверяем сообщения каждые 500 мс
