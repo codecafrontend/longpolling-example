@@ -29,8 +29,10 @@ app.listen(proxyPort, () => {
     console.log(`Server running on http://localhost:${proxyPort}`);
 });
 
-browserSync({
-    port,
-    proxy: `localhost:${proxyPort}`,
-    files: ['dist/**/*']
-});
+if (process.env.IS_DEV) {
+    browserSync({
+        port,
+        proxy: `localhost:${proxyPort}`,
+        files: ['dist/**/*']
+    });
+}
