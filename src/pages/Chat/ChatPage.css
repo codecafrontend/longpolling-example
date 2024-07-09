@@ -29,7 +29,7 @@
 
     height: 40px;
 
-    background: linear-gradient(transparent, #242424);
+    background: linear-gradient(transparent, var(--bg-color));
 }
 
 .Chat__messagesList {
@@ -44,6 +44,16 @@
 
     text-align: start;
     list-style: none;
+}
+
+.Chat__messagesList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.Chat__messagesList::-webkit-scrollbar-thumb {
+    width: 6px;
+    background-color: var(--surface-color);
+    border-radius: 6px;
 }
 
 .Chat__message {
