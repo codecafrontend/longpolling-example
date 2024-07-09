@@ -38,11 +38,9 @@ export const createMessagesApi = (app) => {
         }
 
         function checkForMessages() {
-            console.log('messages in queue', messagesQueue[userId]);
             if (messagesQueue[userId]?.length > 0) {
                 const messages = messagesQueue[userId];
                 messagesQueue[userId] = [];
-                console.log(messages)
                 res.json(messages);
             } else {
                 // Проверяем сообщения каждые 500 мс

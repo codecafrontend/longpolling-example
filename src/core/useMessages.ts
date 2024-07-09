@@ -1,8 +1,10 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { User, UserContext } from './UserContext';
 import { sortMessages } from './lib';
+import { nanoid } from 'nanoid';
 
 export type Message = {
+    id: string;
     user: User;
     text: string;
     timestamp: string;
@@ -15,13 +17,20 @@ export type UseMessagesProps = {
 export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     const user = useContext(UserContext);
 
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Record<string, Message>>({});
+
+    const updateMessages = useCallback((messagesList: Message[]) => {
+        setMessages((state) => ({
+            ...state,
+            ...messagesList.reduce((acc, curr) => ({...acc, [curr.id]: curr}), {}),
+        }));
+    }, []);
 
     const loadHistory = useCallback(async () => {
         const response = await fetch('/history');
         const history = (await response.json()) as Message[];
-        setMessages(history);
-    }, []);
+        updateMessages(history);
+    }, [updateMessages]);
 
     const longPoll = useCallback(async () => {
         try {
@@ -29,13 +38,17 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
             const newMessages = (await response.json()) as Message[];
 
             onBeforeReceiveMessages?.();
-            setMessages((list) => [...list, ...newMessages]);
+            updateMessages(newMessages);
 
             longPoll();
         } catch {
-            setTimeout(longPoll, 2000);
+            setTimeout(() => {
+                loadHistory();
+                longPoll();
+            }, 2000);
         }
-    }, [user, onBeforeReceiveMessages]);
+    }, [user, onBeforeReceiveMessages, updateMessages, loadHistory]);
+
 
     useEffect(() => {
         if (user) {
@@ -47,6 +60,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     const sendMessage = useCallback(
         (text: string) => {
             const message: Message = {
+                id: nanoid(),
                 user,
                 text,
                 timestamp: new Date().toISOString(),
@@ -59,13 +73,13 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
                 },
                 body: JSON.stringify({ message }),
             });
-            setMessages((list) => [...list, message]);
+            updateMessages([message]);
         },
-        [user],
+        [user, updateMessages],
     );
 
     return {
-        messages: sortMessages(messages),
+        messages: sortMessages(Object.values(messages)),
         sendMessage,
     };
 };
