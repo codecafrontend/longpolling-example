@@ -1,11 +1,21 @@
-import { Message } from "./useMessages";
+import { User } from './UserContext';
+import { Message } from './useMessages';
 
-const USER_KEY = "chat_user";
+const USER_KEY = 'chat_user';
 
-export const getSavedUser = () => sessionStorage.getItem(USER_KEY) ?? "";
+export const getSavedUser = () => {
+    try {
+        const info = sessionStorage.getItem(USER_KEY) ?? '';
+        const parsed = JSON.parse(info);
+        return parsed.name && parsed.id ? parsed : null;
+    } catch {
+        return null;
+    }
+};
 
-export const saveUser = (user: string) =>
-    sessionStorage.setItem(USER_KEY, user);
+export const saveUser = (user: User) => {
+    sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+};
 
 export const sortMessages = (messages: Message[]) =>
     messages.slice().sort((a, b) => {

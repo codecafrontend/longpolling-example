@@ -1,22 +1,25 @@
-import { useCallback, useState } from "react";
-import "./App.css";
-import { UserContext } from "./core/UserContext";
-import { LoginPage } from "./pages/Login/LoginPage";
-import { ChatPage } from "./pages/Chat/ChatPage";
-import { getSavedUser, saveUser } from "./core/lib";
+import { useCallback, useState } from 'react';
+import { nanoid } from 'nanoid';
+import './App.css';
+import { User, UserContext } from './core/UserContext';
+import { LoginPage } from './pages/Login/LoginPage';
+import { ChatPage } from './pages/Chat/ChatPage';
+import { getSavedUser, saveUser } from './core/lib';
 
 function App() {
-    const [username, setUsername] = useState<string>(getSavedUser());
+    const [user, setUser] = useState<User>(getSavedUser());
 
-    const handleUser = useCallback((value: string) => {
-        setUsername(value);
-        saveUser(value);
+    const handleUser = useCallback((name: string) => {
+        const newUser = { name, id: nanoid() };
+
+        setUser(newUser);
+        saveUser(newUser);
     }, []);
 
     return (
-        <UserContext.Provider value={{ user: username }}>
-            {!username && <LoginPage onSetUser={handleUser} />}
-            {username && <ChatPage />}
+        <UserContext.Provider value={user}>
+            {!user && <LoginPage onSetUser={handleUser} />}
+            {user && <ChatPage />}
         </UserContext.Provider>
     );
 }

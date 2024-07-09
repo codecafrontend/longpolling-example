@@ -1,6 +1,6 @@
-import { FC, FormEventHandler, useCallback } from "react";
+import { FC, FormEventHandler, useCallback } from 'react';
 
-import "./LoginPage.css";
+import './LoginPage.css';
 
 type LoginPageProps = {
     onSetUser: (name: string) => void;
@@ -13,7 +13,7 @@ export const LoginPage: FC<LoginPageProps> = ({ onSetUser }) => {
 
             const form = event.target as HTMLFormElement;
             const nameInput = form.elements.namedItem(
-                "name",
+                'name',
             ) as HTMLInputElement;
 
             onSetUser(nameInput.value);

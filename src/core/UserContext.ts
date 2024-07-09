@@ -1,3 +1,8 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
-export const UserContext = createContext<{ user: string }>({ user: "" });
+export type User = {
+    name: string;
+    id: string;
+};
+
+export const UserContext = createContext<User>({ name: '', id: '' });

@@ -4,19 +4,36 @@ import {
     useCallback,
     useContext,
     useRef,
-} from "react";
-import { UserContext } from "../../core/UserContext";
+    useEffect,
+} from 'react';
+import { UserContext } from '../../core/UserContext';
 
-import "./ChatPage.css";
-import { useMessages } from "../../core/useMessages";
-import { Message } from "./Message/Message";
+import './ChatPage.css';
+import { useMessages } from '../../core/useMessages';
+import { Message } from './Message/Message';
+import { useScroll } from '../../core/useScroll';
 
 export function ChatPage() {
-    const { user } = useContext(UserContext);
+    const { name, id } = useContext(UserContext);
 
-    const { messages, sendMessage } = useMessages();
-
+    const messagesRef = useRef<HTMLUListElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
+
+    const {
+        scrollIfNeeded,
+        scrollToLastMessage,
+        beforeReceiveMessages,
+        bottomRef,
+        isOverflowed,
+    } = useScroll({ messagesRef });
+
+    const { messages, sendMessage } = useMessages({
+        onBeforeReceiveMessages: beforeReceiveMessages,
+    });
+
+    useEffect(() => {
+        scrollIfNeeded();
+    }, [messages, scrollIfNeeded]);
 
     const handleMessageSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
         (event) => {
@@ -24,7 +41,7 @@ export function ChatPage() {
 
             const form = event.target as HTMLFormElement;
             const messageInput = form.elements.namedItem(
-                "message",
+                'message',
             ) as HTMLTextAreaElement;
 
             if (!messageInput.value) {
@@ -32,13 +49,15 @@ export function ChatPage() {
             }
 
             sendMessage(messageInput.value);
-            messageInput.value = "";
+            messageInput.value = '';
+
+            setTimeout(scrollToLastMessage, 0);
         },
-        [sendMessage],
+        [sendMessage, scrollToLastMessage],
     );
 
     const handleKeydown = useCallback<KeyboardEventHandler>((event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
+        if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             formRef.current?.requestSubmit();
         }
@@ -47,17 +66,25 @@ export function ChatPage() {
     return (
         <div className="Chat">
             <h1>
-                {user}
+                {name}
                 's chat
             </h1>
 
-            <ul className="Chat__messages">
-                {messages.map((message, i) => (
-                    <li key={i} className="Chat__message">
-                        <Message {...message} isSelf={message.user === user} />
-                    </li>
-                ))}
-            </ul>
+            <div
+                className={`Chat__messages ${isOverflowed ? 'Chat__messages_overflowed' : ''}`}
+            >
+                <ul className={`Chat__messagesList`} ref={messagesRef}>
+                    {messages.map((message, i) => (
+                        <li key={i} className="Chat__message">
+                            <Message
+                                {...message}
+                                isSelf={message.user.id === id}
+                            />
+                        </li>
+                    ))}
+                    <div aria-hidden className="Chat__bottom" ref={bottomRef} />
+                </ul>
+            </div>
 
             <form
                 onSubmit={handleMessageSubmit}
