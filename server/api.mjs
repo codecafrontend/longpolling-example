@@ -22,7 +22,7 @@ export const createMessagesApi = (app) => {
         // Добавляем сообщение в очередь всем, кроме автора сообщения
         Object.keys(messagesQueue).forEach((key) => {
             if (key !== message.user.id) {
-                messagesQueue[key] = [...messagesQueue[key], message];
+                messagesQueue[key] = [...(messagesQueue[key] ?? []), message];
             }
         });
 
@@ -32,10 +32,6 @@ export const createMessagesApi = (app) => {
     // Route для long polling
     app.get('/poll', (req, res) => {
         const { userId } = req.query;
-
-        if (!messagesQueue[userId]) {
-            messagesQueue[userId] = [];
-        }
 
         function checkForMessages() {
             if (messagesQueue[userId]?.length > 0) {

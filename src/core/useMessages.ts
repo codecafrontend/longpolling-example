@@ -38,9 +38,11 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     }, [user, onBeforeReceiveMessages]);
 
     useEffect(() => {
-        loadHistory();
-        longPoll();
-    }, [longPoll]);
+        if (user) {
+            loadHistory();
+            longPoll();
+        }
+    }, [user]);
 
     const sendMessage = useCallback(
         (text: string) => {
