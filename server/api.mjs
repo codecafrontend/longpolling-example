@@ -1,14 +1,16 @@
 import express from 'express';
 
 export const createMessagesApi = (app) => {
-    // Хранилище истории сообщений
-    const allMessages = [{
-        user: { name: 'bot', id: '' },
-        text: 'Hello world!',
-        timestamp: new Date().toISOString(),
-    }];
+    // История сообщений
+    const allMessages = [
+        {
+            user: { name: 'bot', id: '' },
+            text: 'Hello world!',
+            timestamp: new Date().toISOString(),
+        },
+    ];
 
-    // Хранилище для сообщений
+    // Очередь для long polling
     const messagesQueue = {};
 
     // Route для отправки сообщений на сервер
@@ -31,9 +33,8 @@ export const createMessagesApi = (app) => {
     app.get('/poll', (req, res) => {
         const { userId } = req.query;
 
-        // Инициализируем чат историей
         if (!messagesQueue[userId]) {
-            messagesQueue[userId] = allMessages;
+            messagesQueue[userId] = [];
         }
 
         function checkForMessages() {
@@ -48,5 +49,10 @@ export const createMessagesApi = (app) => {
         }
 
         checkForMessages();
+    });
+
+    // Route для получения истории
+    app.get('/history', (_, res) => {
+        res.json(allMessages);
     });
 };

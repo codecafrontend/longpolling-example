@@ -17,6 +17,12 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
 
     const [messages, setMessages] = useState<Message[]>([]);
 
+    const loadHistory = useCallback(async () => {
+        const response = await fetch('/history');
+        const history = (await response.json()) as Message[];
+        setMessages(history);
+    }, []);
+
     const longPoll = useCallback(async () => {
         try {
             const response = await fetch(`/poll?userId=${user.id}`);
@@ -32,6 +38,7 @@ export const useMessages = ({ onBeforeReceiveMessages }: UseMessagesProps) => {
     }, [user, onBeforeReceiveMessages]);
 
     useEffect(() => {
+        loadHistory();
         longPoll();
     }, [longPoll]);
 
