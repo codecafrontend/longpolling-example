@@ -10,8 +10,8 @@
     "lint:force": "eslint --fix src && prettier --write src && stylelint --fix 'src/**/*.css'",
     "preview": "vite preview",
     "start:dev:client": "vite build --watch",
-    "start:dev:server": "IS_DEV=true nodemon --config nodemon.json",
-    "start:dev": "run-p start:dev:client start:dev:server",
+    "start:dev:server": "nodemon --config nodemon.json | browser-sync start --config browser-sync.json",
+    "start:dev": "npm run build && run-p start:dev:client start:dev:server",
     "start:production": "npm run build && node ./server/index.mjs"
   },
   "dependencies": {

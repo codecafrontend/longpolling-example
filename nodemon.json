@@ -1,5 +1,5 @@
 {
-    "watch": ["server/", "dist/"],
-    "ext": "js,jsx,css,html",
+    "watch": ["server"],
+    "ext": "js,mjs,css,html",
     "exec": "node ./server/index.mjs"
 }

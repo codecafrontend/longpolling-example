@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import browserSync from 'browser-sync';
 
 import { createMessagesApi } from './api.mjs';
 
@@ -29,10 +28,3 @@ app.listen(proxyPort, () => {
     console.log(`Server running on http://localhost:${proxyPort}`);
 });
 
-if (process.env.IS_DEV) {
-    browserSync({
-        port,
-        proxy: `localhost:${proxyPort}`,
-        files: ['dist/**/*']
-    });
-}
